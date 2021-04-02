@@ -12,11 +12,11 @@ namespace MasteringEFCore.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // const string strConnection = "Server=localhost,1433;Database=MasteringEFCoreDB;User Id=sa;Password=#MyPass123;Trusted_Connection=false;MultipleActiveResultSets=true;Pooling=true";
             const string strConnection = "Server=localhost,1433;Database=MasteringEFCoreDB-03;User Id=sa;Password=#MyPass123;Trusted_Connection=false;MultipleActiveResultSets=true";
             optionsBuilder
-                .UseSqlServer(strConnection, 
-                              p => p.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                .UseSqlServer(strConnection)
+                 // .UseSqlServer(strConnection, 
+                //               p => p.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                 .EnableSensitiveDataLogging()
                 .LogTo(Console.WriteLine, LogLevel.Information);
         }

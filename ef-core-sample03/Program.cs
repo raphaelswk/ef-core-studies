@@ -14,13 +14,81 @@ namespace MasteringEFCore
         {
             Console.WriteLine("Hello World!");
 
-            SplitQuery();
+            QueryViaStoredProcedure();
+            // CreateQueryStoredProcedure();
+            // InsertingDataViaStoredProcedure();
+            // CreateStoredProcedure();
+            
+            // SplitQuery();
             // QueryTagWith();
             
             // SqlRawQuery();
             // SelectedQuery();
             // GlobalFilter();
             // IgnoreGlobalFilter();
+        }
+        static void QueryViaStoredProcedure()
+        {
+            using var db = new ApplicationContext();
+
+            var pDep = new SqlParameter("@pDep", "via");
+
+            var departments = db.Departments
+                                // .FromSqlRaw("EXECUTE GetDepartments @pDep", pDep)
+                                // .FromSqlRaw("EXECUTE GetDepartments @p0", "Via")
+                                .FromSqlInterpolated($"EXECUTE GetDepartments {pDep}")
+                                .ToList();
+
+            foreach (var department in departments)
+            {
+                Console.WriteLine(department.Description);
+            }
+        }
+
+        static void CreateQueryStoredProcedure()
+        {
+            var createqQueryDepartmentSP = @"
+                CREATE OR ALTER PROCEDURE GetDepartments
+                    @Description VARCHAR(50)
+                AS
+                BEGIN
+                    SELECT [Id]
+                         , [Description]
+                         , [Active]
+                         , [Deleted]
+                      FROM [Departments]
+                     WHERE [Description] LIKE '%' + @Description + '%'
+                END
+            ";
+
+            using var db = new ApplicationContext();
+            db.Database.ExecuteSqlRaw(createqQueryDepartmentSP);
+        }
+
+        static void InsertingDataViaStoredProcedure()
+        {
+            using var db = new ApplicationContext();
+            db.Database.ExecuteSqlRaw("EXECUTE CreateDepartment @p0, @p1", 
+                                      "Department via SP", 
+                                      true);
+        }
+
+        static void CreateStoredProcedure()
+        {
+            var createDepartment = @"
+                CREATE OR ALTER PROCEDURE CreateDepartment
+                    @Description VARCHAR(50),
+                    @Active bit
+                AS
+                BEGIN
+                    INSERT INTO
+                        Departments(Description, Active, Deleted)
+                    VALUES (@Description, @Active, 0)
+                END
+            ";
+
+            using var db = new ApplicationContext();
+            db.Database.ExecuteSqlRaw(createDepartment);
         }
 
         static void SplitQuery()
