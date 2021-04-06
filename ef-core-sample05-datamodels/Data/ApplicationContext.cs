@@ -1,8 +1,9 @@
 using System;
-using MasteringEFCore.Converters;
+using System.Collections.Generic;
+using System.Reflection;
+using MasteringEFCore.Configurations;
 using MasteringEFCore.Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
 
 namespace MasteringEFCore.Data
@@ -12,8 +13,21 @@ namespace MasteringEFCore.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<State> States { get; set; }
+
         public DbSet<Converter> Converters { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         
+        public DbSet<Actor> Actors { get; set; }
+        public DbSet<Movie> Movies { get; set; }
+
+        public DbSet<Document> Documents { get; set; }
+        
+        public DbSet<Person> Persons { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Student> Students { get; set; }
+
+        public DbSet<Dictionary<string, object>> Configurations => Set<Dictionary<string, object>>("Configurations");
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             const string strConnection = "Server=localhost,1433;Database=MasteringEFCoreDB-05;User Id=sa;Password=#MyPass123;Trusted_Connection=false;MultipleActiveResultSets=true";
@@ -25,31 +39,54 @@ namespace MasteringEFCore.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // CONVERSION
+            // PROPERTIES BAG
+            modelBuilder.SharedTypeEntity<Dictionary<string, object>>("Configurations", b =>
+            {
+                b.Property<int>("Id");
 
-            // All existing converters
-            // Microsoft.EntityFrameworkCore.Storage.ValueConversion.
-            // ValueConverter is to be used for specific needs
+                b.Property<string>("Key")
+                 .HasColumnType("VARCHAR(40)")
+                 .IsRequired();
 
-            var conversion = 
-                new ValueConverter<MasteringEFCore.Domain.Version, string>(
-                    p => p.ToString(), 
-                    p => (MasteringEFCore.Domain.Version)Enum.Parse(typeof(MasteringEFCore.Domain.Version), p));
+                b.Property<string>("Value")
+                 .HasColumnType("VARCHAR(255)")
+                 .IsRequired();
+            });
 
-            var conversion2 = new EnumToStringConverter<MasteringEFCore.Domain.Version>();
+            // modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+            // LINES BELOW IMPORT ALL THE CLASSES IMPLEMENTING THE INTERFACE IEntityTypeConfiguration
+            // FROM THE CURRENT ASSEMBLY. SO THERE IS NO NEED TO IMPORT ONE BY ONE
+            // modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationContext).Assembly);
 
-            modelBuilder.Entity<Converter>()
-                        .Property(p => p.Version)
-                        .HasConversion(conversion2);
-                        // .HasConversion(conversion);
-                        // .HasConversion(p => p.ToString(), // Makes EF Core save it on DB as String
-                        //                                   // When EF Core reads it, convert to chosen enum
-                        //                p => (MasteringEFCore.Domain.Version)Enum.Parse(typeof(MasteringEFCore.Domain.Version), p));
-                        // .HasConversion<string>();
+            // // SHADOW PROPERTIES
+            // modelBuilder.Entity<Department>().Property<DateTime>("LastUpdate");
 
-            modelBuilder.Entity<Converter>()
-                        .Property(p => p.Status)
-                        .HasConversion(new CustomConverter());
+            // // CONVERSION
+
+            // // All existing converters
+            // // Microsoft.EntityFrameworkCore.Storage.ValueConversion.
+            // // ValueConverter is to be used for specific needs
+
+            // var conversion = 
+            //     new ValueConverter<MasteringEFCore.Domain.Version, string>(
+            //         p => p.ToString(), 
+            //         p => (MasteringEFCore.Domain.Version)Enum.Parse(typeof(MasteringEFCore.Domain.Version), p));
+
+            // var conversion2 = new EnumToStringConverter<MasteringEFCore.Domain.Version>();
+
+            // modelBuilder.Entity<Converter>()
+            //             .Property(p => p.Version)
+            //             .HasConversion(conversion2);
+            //             // .HasConversion(conversion);
+            //             // .HasConversion(p => p.ToString(), // Makes EF Core save it on DB as String
+            //             //                                   // When EF Core reads it, convert to chosen enum
+            //             //                p => (MasteringEFCore.Domain.Version)Enum.Parse(typeof(MasteringEFCore.Domain.Version), p));
+            //             // .HasConversion<string>();
+
+            // modelBuilder.Entity<Converter>()
+            //             .Property(p => p.Status)
+            //             .HasConversion(new CustomConverter());
 
             // // SCHEMAS
             // modelBuilder.HasDefaultSchema("registrations");
