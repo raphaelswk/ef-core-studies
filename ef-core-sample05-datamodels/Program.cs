@@ -50,7 +50,7 @@ namespace MasteringEFCore
 
                 var configurations = db.Configurations
                                        .AsNoTracking()
-                                       .Where(p => p["Key"] == "DatabasePassword")
+                                       .Where(p => p["Key"] as string == "DatabasePassword")
                                        .ToArray();
                 
                 foreach (var dic in configurations)
