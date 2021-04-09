@@ -1,0 +1,96 @@
+JsonRpc Information: 3 : Listening started.
+JsonRpc Information: 7 : {"id":0,"method":"textDocument/didChange"}
+JsonRpc Verbose: 7 : Received: {
+  "jsonrpc": "2.0",
+  "method": "textDocument/didChange",
+  "params": [
+    {
+      "textDocument": {
+        "uri": "file:///home/raphael/Dotnet/ef-core-studies/ef-core-sample08-multi-tenant/src/Domain/Person.cs",
+        "version": 6
+      },
+      "contentChanges": [
+        {
+          "text": "using System;\r\nusing src.Domain.Abstract;\r\n\r\nnamespace src.Domain\r\n{\r\n    public class Person : BaseEntity\r\n    {\r\n        \r\n    }\r\n}\r\n"
+        }
+      ]
+    }
+  ],
+  "id": 0
+}
+JsonRpc Information: 6 : Received request "0" for method "textDocument/didChange".
+JsonRpc Information: 9 : Invoking VSSharperServer.Server.VSSharperServer.TextDocumentDidChange(DidChangeTextDocumentParams)
+JsonRpc Information: 8 : {"id":0}
+JsonRpc Verbose: 8 : Sent: {
+  "jsonrpc": "2.0",
+  "result": null,
+  "id": 0
+}
+JsonRpc Information: 7 : {"id":1,"method":"workspace/executeCommand"}
+JsonRpc Verbose: 7 : Received: {
+  "jsonrpc": "2.0",
+  "method": "workspace/executeCommand",
+  "params": [
+    {
+      "command": "CSharpSortUsingDirectives"
+    }
+  ],
+  "id": 1
+}
+JsonRpc Information: 6 : Received request "1" for method "workspace/executeCommand".
+JsonRpc Information: 9 : Invoking VSSharperServer.Server.VSSharperServer.ExecuteCommand(ExecuteCommandParams)
+JsonRpc Information: 8 : {"id":2,"method":"workspace/applyEdit"}
+JsonRpc Verbose: 8 : Sent: {
+  "jsonrpc": "2.0",
+  "method": "workspace/applyEdit",
+  "params": [
+    {
+      "Edits": [
+        {
+          "NewText": "\r\n",
+          "Range": {
+            "End": {
+              "Character": 0,
+              "Line": 1
+            },
+            "Start": {
+              "Character": 0,
+              "Line": 1
+            }
+          }
+        }
+      ],
+      "TextDocument": {
+        "Uri": "file:///home/raphael/Dotnet/ef-core-studies/ef-core-sample08-multi-tenant/src/Domain/Person.cs",
+        "Version": 6
+      },
+      "Kind": null,
+      "Options": null,
+      "Uri": null,
+      "NewUri": null,
+      "OldUri": null
+    }
+  ],
+  "id": 2
+}
+JsonRpc Information: 7 : {"id":2}
+JsonRpc Verbose: 7 : Received: {
+  "jsonrpc": "2.0",
+  "result": null,
+  "id": 2
+}
+JsonRpc Information: 11 : Received result for request "2".
+JsonRpc Information: 8 : {"id":1}
+JsonRpc Verbose: 8 : Sent: {
+  "jsonrpc": "2.0",
+  "result": null,
+  "id": 1
+}
+JsonRpc Information: 7 : {"id":null,"method":"exit"}
+JsonRpc Verbose: 7 : Received: {
+  "jsonrpc": "2.0",
+  "method": "exit"
+}
+JsonRpc Information: 6 : Received notification for method "exit".
+JsonRpc Information: 9 : Invoking VSSharperServer.Server.VSSharperServer.Exit()
+JsonRpc Information: 13 : Connection closing (LocallyDisposed: Stream has been disposed). 
